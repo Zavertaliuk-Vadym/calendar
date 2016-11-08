@@ -1,10 +1,8 @@
 import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.format.TextStyle;
 import java.util.List;
-import java.util.Locale;
 
-class PrintInWeb {
+class PrintInWeb extends Print{
     private static final String WEEKEND_TEXT_START_TOKEN_IN_WEB = "<td class=\"weekend\">";
     private static final String TEXT_END_TOKEN_IN_WEB = "</td>";
     private static final String CURRENT_DAY_TEXT_START_TOKEN_IN_WEB = "<td class=\"currentDay\">";
@@ -15,7 +13,7 @@ class PrintInWeb {
     private static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
 
-    static String printCalendarInWeb(List<DayOfWeek> weekends, DayOfWeek monthStartWithThisDate, int[][] massiveWithCalendar, LocalDate nowDay) {
+    String print(List<DayOfWeek> weekends, DayOfWeek monthStartWithThisDate, int[][] massiveWithCalendar, LocalDate nowDay) {
         return printHeaderHTML()+
                 printCalendarHeaderInWeb(weekends, monthStartWithThisDate) +
                 printCalendarArrayInWeb(weekends, massiveWithCalendar, nowDay,monthStartWithThisDate)+
@@ -37,13 +35,14 @@ class PrintInWeb {
     private static String printCalendarArrayInWeb(List<DayOfWeek> weekends,
                                             int[][] massiveOfCalendar, LocalDate currentDay,DayOfWeek firstDaySelectedMonth) {
         StringBuilder printerCalendarArray = new StringBuilder();
-        int thisDay = firstDaySelectedMonth.getValue();
         int nowDay = currentDay.getDayOfMonth();
+        DayOfWeek thisDay = DayOfWeek.of(firstDaySelectedMonth.getValue());
         for (int i = 0; i < MAX_WEEKS_IN_MONTH; i++) {
             printerCalendarArray.append(OPEN_TAG_TABLE_ROW);
             for (int j = 0; j < DAYS_IN_WEEK; j++) {
                 selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j],nowDay ),
-                        weekends.contains(DayOfWeek.of(j+1).minus(thisDay)), printerCalendarArray);
+                        weekends.contains(thisDay), printerCalendarArray);
+                thisDay = thisDay.plus(1);
             }
             printerCalendarArray.append(CLOSE_TAG_TABLE_ROW);
             printerCalendarArray.append("\n");
@@ -52,7 +51,7 @@ class PrintInWeb {
     }
 
     private static void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray) {
-        if (currentPosition == 0) {
+        if (Print.isCurrentDay(currentPosition, 0)) {
             printerCalendarArray.append(getFormat(OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN, "    "));
             return;
         }
@@ -73,18 +72,6 @@ class PrintInWeb {
             printerCalendarHeader.append(getFormat(OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN, getTypeOfInputCalendarHeader(currentPosition)));
 
         }
-    }
-
-    private static boolean isCurrentDay(int day, int currentDay) {
-        return day == currentDay;
-    }
-
-    private static String getFormat(int i, String format) {
-        return String.format(format, i);
-    }
-
-    private static String getFormat(String format, String typeOfInputCalendarHeader) {
-        return String.format(format, typeOfInputCalendarHeader);
     }
 
     private static String printHeaderHTML() {
@@ -112,11 +99,5 @@ class PrintInWeb {
         return "</table>\n" +
                 "</body>\n" +
                 "</Html>";
-    }
-
-    private static String getTypeOfInputCalendarHeader(DayOfWeek dayOfWeek) {
-        return dayOfWeek
-                .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
-                .toUpperCase();
     }
 }

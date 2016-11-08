@@ -6,7 +6,7 @@ class FillMassiveOfCalendar {
     private static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
 
-    static void fillInCalendarArray(int[][] a, LocalDate localDate, DayOfWeek dayOfWeek) {
+    static int[][] fillInCalendarArray(int[][] a, LocalDate localDate, DayOfWeek dayOfWeek) {
 
         int firstDayOfFirstWeekCurrentMonth = localDate.with(TemporalAdjusters.firstDayOfMonth()).getDayOfWeek().getValue();
         int firstDay = DayOfWeek.of(firstDayOfFirstWeekCurrentMonth).minus(dayOfWeek.getValue()).plus(1).getValue();
@@ -21,8 +21,9 @@ class FillMassiveOfCalendar {
                 a[i][j] = number;
                 number++;
                 if (number == dayInMonth + 1)
-                    return;
+                    return a;
             }
         }
+        return a;
     }
 }
