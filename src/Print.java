@@ -8,12 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public abstract class Print {
-    protected static final int DAYS_IN_WEEK = 7;
+abstract class Print {
+    private static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
     private static final String GREEN_TEXT_START_TOKEN = (char) 27 + "[36m";
     private static final String EXT_END_TOKEN = (char) 27 + "[0m";
     private static final String RED_TEXT_START_TOKEN = (char) 27 + "[31m";
+    private static final String OPEN_TAG_TABLE_ROW = "<tr>";
+    private static final String CLOSE_TAG_TABLE_ROW = "</tr>";
 
     private YearMonth month;
     private LocalDate today;
@@ -26,11 +28,11 @@ public abstract class Print {
         this(LocalDate.now());
     }
 
-    Print(LocalDate today) {
+    private Print(LocalDate today) {
         this(YearMonth.now(), today);
     }
 
-    Print(YearMonth month, LocalDate today) {
+    private Print(YearMonth month, LocalDate today) {
         this.month = month;
         this.today = today;
         dayOfWeek = DayOfWeek.SUNDAY;
@@ -43,6 +45,9 @@ public abstract class Print {
 
     void print() {
         System.out.println(print(weekends, dayOfWeek, massiveWithCalendar, today));
+    }
+
+    void printInWeb() {
         PrintInWeb printInWeb = new PrintInWeb();
         try (PrintWriter printWriter = new PrintWriter("text3.html")) {
             printWriter.println(printInWeb.print(weekends, dayOfWeek, massiveWithCalendar, today));
@@ -62,27 +67,19 @@ public abstract class Print {
         int firstDay = firstDaySelectedMonth.getValue();
         DayOfWeek thisDay = DayOfWeek.of(firstDay);
         for (int i = 1; i <= DAYS_IN_WEEK; i++) {
-            days.append(selectionWeekends(weekends, thisDay));
+            days.append(getWeekend(weekends, thisDay));
             thisDay = thisDay.plus(1);
         }
         days.append("\n");
         return days.toString();
     }
 
-    private String selectionWeekends(List<DayOfWeek> weekends, DayOfWeek dayOfWeek) {
-        if (weekends.contains(dayOfWeek)) {
-            return getFormat(RED_TEXT_START_TOKEN + "%4s" + EXT_END_TOKEN, getTypeOfInputCalendarHeader(dayOfWeek));
-        } else {
-            return getFormat("%4s", getTypeOfInputCalendarHeader(dayOfWeek));
-
-        }
-    }
+    abstract String getWeekend(List<DayOfWeek> weekends, DayOfWeek dayOfWeek);
 
     private String printCalendarArray(List<DayOfWeek> weekends, int[][] massiveOfCalendar,
                                       LocalDate currentDay, DayOfWeek firstDaySelectedMonth) {
         StringBuilder printerCalendarArray = new StringBuilder();
         DayOfWeek thisDay = DayOfWeek.of(firstDaySelectedMonth.getValue());
-        System.out.println(thisDay);
         int nowDay = currentDay.getDayOfMonth();
         for (int i = 0; i < MAX_WEEKS_IN_MONTH; i++) {
             for (int j = 0; j < DAYS_IN_WEEK; j++) {
@@ -99,19 +96,7 @@ public abstract class Print {
         return day == currentDay;
     }
 
-    private void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray) {
-        if (currentPosition == 0) {
-            printerCalendarArray.append(getFormat("%4s", ""));
-            return;
-        }
-        if (currentDay)
-            printerCalendarArray.append(getFormat(currentPosition, GREEN_TEXT_START_TOKEN + "%4d" + EXT_END_TOKEN));
-        else if (weekends)
-            printerCalendarArray.append(getFormat(currentPosition, RED_TEXT_START_TOKEN + "%4d" + EXT_END_TOKEN));
-        else {
-            printerCalendarArray.append(getFormat(currentPosition, "%4d"));
-        }
-    }
+    abstract void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray);
 
     static String getFormat(int i, String format) {
         return String.format(format, i);
@@ -127,12 +112,3 @@ public abstract class Print {
                 .toUpperCase();
     }
 }
-//void printInWeb(){
-//        PrintInWeb printInWeb = new PrintInWeb();
-
-//        try (PrintWriter printWriter = new PrintWriter("text3.html")) {
-//            printWriter.println(printInWeb.print(weekends, dayOfWeek, massiveWithCalendar, today));
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//        }
-//    }

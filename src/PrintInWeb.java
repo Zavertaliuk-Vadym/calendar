@@ -20,19 +20,44 @@ class PrintInWeb extends Print{
                 printDownHTML();
     }
 
-    private static String printCalendarHeaderInWeb(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
+    String printCalendarHeaderInWeb(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
         StringBuilder printerCalendarHeader = new StringBuilder();
         printerCalendarHeader.append(OPEN_TAG_TABLE_ROW);
         DayOfWeek thisDay = DayOfWeek.of(firstDaySelectedMonth.getValue());
         for (int i = 1; i <= DAYS_IN_WEEK; i++) {
-            selectionWeekends(weekends, printerCalendarHeader, thisDay);
+            printerCalendarHeader.append(getWeekend(weekends, thisDay));
             thisDay = thisDay.plus(1);
         }
         printerCalendarHeader.append(CLOSE_TAG_TABLE_ROW);
         return printerCalendarHeader.toString();
     }
 
-    private static String printCalendarArrayInWeb(List<DayOfWeek> weekends,
+    @Override
+    String getWeekend(List<DayOfWeek> weekends, DayOfWeek dayOfWeek) {
+        if (weekends.contains(dayOfWeek)) {
+            return getFormat(WEEKEND_TEXT_START_TOKEN_IN_WEB + "%4s" + TEXT_END_TOKEN_IN_WEB,getTypeOfInputCalendarHeader(dayOfWeek));
+        } else {
+            return getFormat(OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN,getTypeOfInputCalendarHeader(dayOfWeek));
+
+        }
+    }
+
+    @Override
+    void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray) {
+        if (Print.isCurrentDay(currentPosition, 0)) {
+            printerCalendarArray.append(getFormat(OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN, "    "));
+            return;
+        }
+        if (currentDay)
+            printerCalendarArray.append(getFormat(currentPosition, CURRENT_DAY_TEXT_START_TOKEN_IN_WEB + "%4d" + TEXT_END_TOKEN_IN_WEB));
+        else if (weekends)
+            printerCalendarArray.append(getFormat(currentPosition, WEEKEND_TEXT_START_TOKEN_IN_WEB + "%4d" + TEXT_END_TOKEN_IN_WEB));
+        else {
+            printerCalendarArray.append(getFormat(currentPosition, OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN));
+        }
+    }
+
+    private String printCalendarArrayInWeb(List<DayOfWeek> weekends,
                                             int[][] massiveOfCalendar, LocalDate currentDay,DayOfWeek firstDaySelectedMonth) {
         StringBuilder printerCalendarArray = new StringBuilder();
         int nowDay = currentDay.getDayOfMonth();
@@ -48,30 +73,6 @@ class PrintInWeb extends Print{
             printerCalendarArray.append("\n");
         }
         return printerCalendarArray.toString();
-    }
-
-    private static void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray) {
-        if (Print.isCurrentDay(currentPosition, 0)) {
-            printerCalendarArray.append(getFormat(OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN, "    "));
-            return;
-        }
-        if (currentDay)
-            printerCalendarArray.append(getFormat(currentPosition, CURRENT_DAY_TEXT_START_TOKEN_IN_WEB + "%4d" + TEXT_END_TOKEN_IN_WEB));
-        else if (weekends)
-            printerCalendarArray.append(getFormat(currentPosition, WEEKEND_TEXT_START_TOKEN_IN_WEB + "%4d" + TEXT_END_TOKEN_IN_WEB));
-        else {
-            printerCalendarArray.append(getFormat(currentPosition, OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN));
-        }
-    }
-
-    private static void selectionWeekends(List<DayOfWeek> weekends, StringBuilder printerCalendarHeader, DayOfWeek currentPosition) {
-
-        if (weekends.contains(currentPosition)) {
-            printerCalendarHeader.append(getFormat(WEEKEND_TEXT_START_TOKEN_IN_WEB + "%4s" + TEXT_END_TOKEN_IN_WEB, getTypeOfInputCalendarHeader(currentPosition)));
-        } else {
-            printerCalendarHeader.append(getFormat(OPEN_TAG_TABLE_COLUMN+"%4s"+CLOSE_TAG_TABLE_COLUMN, getTypeOfInputCalendarHeader(currentPosition)));
-
-        }
     }
 
     private static String printHeaderHTML() {
