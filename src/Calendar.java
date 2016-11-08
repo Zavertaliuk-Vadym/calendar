@@ -1,4 +1,5 @@
-import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
@@ -42,13 +43,15 @@ public class Calendar {
         System.out.println(printInConsole.printCalendarInConsole(weekends, dayOfWeek, massiveWithCalendar, today.getDayOfMonth()));
     }
     void printInWeb(){
-//        File file = new File();
         PrintInWeb printInWeb = new PrintInWeb();
         int monthLength = today.lengthOfMonth();
         int firstDayInMonth = today.with(TemporalAdjusters.firstDayOfMonth()).getDayOfWeek().getValue();
         FillMassiveOfCalendar.fillInCalendarArray(massiveWithCalendar, firstDayInMonth, monthLength);
-        System.out.println(printInWeb.printCalendarInWeb(weekends, dayOfWeek, massiveWithCalendar, today.getDayOfMonth()));
-
+        try (PrintWriter printWriter = new PrintWriter("text3.html")) {
+            printWriter.println(printInWeb.printCalendarInWeb(weekends, dayOfWeek, massiveWithCalendar, today.getDayOfMonth()));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private static LocalDate getDate(String[] args) {

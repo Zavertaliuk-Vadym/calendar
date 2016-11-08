@@ -17,6 +17,15 @@ class PrintInConsole {
                 printCalendarArray(weekends, massiveWithCalendar, nowDay);
     }
 
+    public static String printCalendarHeader(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
+        StringBuilder printerCalendarHeader = new StringBuilder();
+        for (int i = firstDaySelectedMonth.getValue(); i < DAYS_IN_WEEK+firstDaySelectedMonth.getValue(); i++) {
+            selectionWeekends(weekends, printerCalendarHeader, i);
+        }
+        printerCalendarHeader.append("\n");
+        return printerCalendarHeader.toString();
+    }
+
     public static String printCalendarArray(List<DayOfWeek> weekends,
                                             int[][] massiveOfCalendar, int currentDay) {
         StringBuilder printerCalendarArray = new StringBuilder();
@@ -50,15 +59,6 @@ class PrintInConsole {
 
     private static String getFormat(int i, String format) {
         return String.format(format, i);
-    }
-
-    public static String printCalendarHeader(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
-        StringBuilder printerCalendarHeader = new StringBuilder();
-        for (int i = firstDaySelectedMonth.getValue(); i < DAYS_IN_WEEK+firstDaySelectedMonth.getValue(); i++) {
-            selectionWeekends(weekends, printerCalendarHeader, i);
-        }
-        printerCalendarHeader.append("\n");
-        return printerCalendarHeader.toString();
     }
 
     private static void selectionWeekends(List<DayOfWeek> weekends, StringBuilder printerCalendarHeader, int currentPosition) {
