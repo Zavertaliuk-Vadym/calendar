@@ -8,6 +8,16 @@ class PrintInConsole extends Print {
     private static final String RED_TEXT_START_TOKEN = (char) 27 + "[31m";
 
     @Override
+    String printFooter() {
+        return null;
+    }
+
+    @Override
+    String printHeader() {
+        return null;
+    }
+
+    @Override
     String startOfStringHeader() {
         return "";
     }

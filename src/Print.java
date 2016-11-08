@@ -11,12 +11,6 @@ import java.util.Locale;
 abstract class Print {
     private static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
-    private static final String GREEN_TEXT_START_TOKEN = (char) 27 + "[36m";
-    private static final String EXT_END_TOKEN = (char) 27 + "[0m";
-    private static final String RED_TEXT_START_TOKEN = (char) 27 + "[31m";
-    private static final String OPEN_TAG_TABLE_ROW = "<tr>";
-    private static final String CLOSE_TAG_TABLE_ROW = "</tr>";
-
     private YearMonth month;
     private LocalDate today;
     private DayOfWeek dayOfWeek;
@@ -35,7 +29,7 @@ abstract class Print {
     private Print(YearMonth month, LocalDate today) {
         this.month = month;
         this.today = today;
-        dayOfWeek = DayOfWeek.SUNDAY;
+        dayOfWeek = DayOfWeek.FRIDAY;
         weekends = new ArrayList<>();
         weekends.add(DayOfWeek.SATURDAY);
         weekends.add(DayOfWeek.SUNDAY);
@@ -43,31 +37,9 @@ abstract class Print {
         massiveOfCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveOfCalendar, today, dayOfWeek);
     }
 
-    void print(boolean bool) {
-        if (bool) {
-            System.out.println(printCalendarHeader() + printCalendarArray());
-        } else {
-            try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
-                printWriter.println(printHeaderHTML() + printCalendarHeader() + printCalendarArray() + printDownHTML());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
+    abstract String printFooter();
 
-    }
-
-    private String printCalendarHeader() {
-        StringBuilder days = new StringBuilder();
-        int firstDay = dayOfWeek.getValue();
-        DayOfWeek thisDay = DayOfWeek.of(firstDay);
-        days.append(startOfStringHeader());                                                ///!!!!!
-        for (int i = 1; i <= DAYS_IN_WEEK; i++) {
-            days.append(getWeekend(weekends, thisDay));
-            thisDay = thisDay.plus(1);
-        }
-        days.append(endOfStringHeader());
-        return days.toString();
-    }
+    abstract String printHeader();
 
     abstract String endOfStringHeader();
 
@@ -80,6 +52,32 @@ abstract class Print {
     abstract String getWeekend(List<DayOfWeek> weekends, DayOfWeek dayOfWeek);
 
     abstract String selectionOfDay(int currentPosition, boolean currentDay, boolean weekends);
+
+    private String printCalendarHeader() {
+        StringBuilder days = new StringBuilder();
+        int firstDay = dayOfWeek.getValue();
+        DayOfWeek thisDay = DayOfWeek.of(firstDay);
+        days.append(startOfStringHeader());
+        for (int i = 1; i <= DAYS_IN_WEEK; i++) {
+            days.append(getWeekend(weekends, thisDay));
+            thisDay = thisDay.plus(1);
+        }
+        days.append(endOfStringHeader());
+        return days.toString();
+    }
+
+    void print(boolean bool) {
+        if (bool) {
+            System.out.println(printCalendarHeader() + printCalendarArray());
+        } else {
+            try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
+                printWriter.println(printHeader() + printCalendarHeader() + printCalendarArray() + printFooter());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
 
     private String printCalendarArray() {
         StringBuilder printerCalendarArray = new StringBuilder();
@@ -97,49 +95,54 @@ abstract class Print {
         return printerCalendarArray.toString();
     }
 
-    static boolean isCurrentDay(int day, int currentDay) {
+    boolean isCurrentDay(int day, int currentDay) {
         return day == currentDay;
     }
 
-    static String getFormat(int i, String format) {
+     String getFormat(int i, String format) {
         return String.format(format, i);
     }
 
-    static String getFormat(String format, String typeOfInputCalendarHeader) {
+     String getFormat(String format, String typeOfInputCalendarHeader) {
         return String.format(format, typeOfInputCalendarHeader);
     }
 
-    static String getTypeOfInputCalendarHeader(DayOfWeek dayOfWeek) {
+    String getTypeOfInputCalendarHeader(DayOfWeek dayOfWeek) {
         return dayOfWeek
-                .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
+                .getDisplayName(TextStyle.SHORT, locale)
                 .toUpperCase();
     }
-
-
-    private static String printHeaderHTML() {
-
-        return "<Html>\n" +
-                "<head>\n" +
-                "<style>\n" +
-                "       td.weekend{\n" +
-                "           color: red;\n" +
-                "       }\n" +
-                "       td.currentDay{\n" +
-                "           color: green;\n" +
-                "       }\n" +
-                "       td{\n" +
-                "           padding:5px;\n" +
-                "       }\n" +
-                "   </style>\n" +
-                "</head>\n" +
-                "<body>\n" +
-                "<table>";
+    public LocalDate getToday() {
+        return today;
     }
 
-    private static String printDownHTML() {
-
-        return "</table>\n" +
-                "</body>\n" +
-                "</Html>";
+    public void setToday(LocalDate today) {
+        this.today = today;
     }
+
+    public DayOfWeek getDayOfWeek() {
+        return dayOfWeek;
+    }
+
+    public void setDayOfWeek(DayOfWeek dayOfWeek) {
+        this.dayOfWeek = dayOfWeek;
+    }
+
+    public List<DayOfWeek> getWeekends() {
+        return weekends;
+    }
+
+    public void setWeekends(List<DayOfWeek> weekends) {
+        this.weekends = weekends;
+    }
+
+    public Locale getLocale() {
+        return locale;
+    }
+
+    public void setLocale(Locale locale) {
+        this.locale = locale;
+    }
+
+
 }

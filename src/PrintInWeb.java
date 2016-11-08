@@ -10,6 +10,33 @@ class PrintInWeb extends Print {
     private static final String CLOSE_TAG_TABLE_ROW = "</tr>";
 
     @Override
+    String printHeader() {
+        return "<Html>\n" +
+                "<head>\n" +
+                "<style>\n" +
+                "       td.weekend{\n" +
+                "           color: red;\n" +
+                "       }\n" +
+                "       td.currentDay{\n" +
+                "           color: green;\n" +
+                "       }\n" +
+                "       td{\n" +
+                "           padding:5px;\n" +
+                "       }\n" +
+                "   </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<table>";
+    }
+
+    @Override
+    String printFooter() {
+        return "</table>\n" +
+                "</body>\n" +
+                "</Html>";
+    }
+
+    @Override
     String startOfStringHeader() {
         return OPEN_TAG_TABLE_ROW;
     }
@@ -40,7 +67,7 @@ class PrintInWeb extends Print {
 
     @Override
     String selectionOfDay(int currentPosition, boolean currentDay, boolean weekends) {
-        if (Print.isCurrentDay(currentPosition, 0)) {
+        if (isCurrentDay(currentPosition, 0)) {
             return getFormat(OPEN_TAG_TABLE_COLUMN + "%4s" + TEXT_END_TOKEN_IN_WEB, "    ");
         }
         if (currentDay)
