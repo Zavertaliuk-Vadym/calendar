@@ -27,7 +27,7 @@ class PrintInWeb extends Print {
                 "   </style>\n" +
                 "</head>\n" +
                 "<body>\n" +
-                String.format("  Present day : %10s\n",today)+
+                String.format("  Present day : %10s\n", today) +
                 "<table>";
     }
 

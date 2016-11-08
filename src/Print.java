@@ -34,7 +34,7 @@ abstract class Print {
         weekends.add(DayOfWeek.SATURDAY);
         weekends.add(DayOfWeek.SUNDAY);
         locale = Locale.getDefault();
-        massiveOfCalendar=new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
+        massiveOfCalendar = new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
     }
 
     abstract String printFooter();
@@ -68,7 +68,7 @@ abstract class Print {
 
     void print(boolean bool) {
         if (bool) {
-            System.out.println(printHeader(today)+printCalendarHeader() + printCalendarArray()+printFooter());
+            System.out.println(printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter());
         } else {
             try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
                 printWriter.println(printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter());
@@ -80,7 +80,7 @@ abstract class Print {
     }
 
     private String printCalendarArray() {
-         massiveOfCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveOfCalendar, today, dayOfWeek);
+        massiveOfCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveOfCalendar, today, dayOfWeek);
         StringBuilder printerCalendarArray = new StringBuilder();
         DayOfWeek thisDay = DayOfWeek.of(dayOfWeek.getValue());
         int nowDay = today.getDayOfMonth();
@@ -100,11 +100,11 @@ abstract class Print {
         return day == currentDay;
     }
 
-     String getFormat(int i, String format) {
+    String getFormat(int i, String format) {
         return String.format(format, i);
     }
 
-     String getFormat(String format, String typeOfInputCalendarHeader) {
+    String getFormat(String format, String typeOfInputCalendarHeader) {
         return String.format(format, typeOfInputCalendarHeader);
     }
 
@@ -113,6 +113,7 @@ abstract class Print {
                 .getDisplayName(TextStyle.SHORT, locale)
                 .toUpperCase();
     }
+
     public LocalDate getToday() {
         return today;
     }

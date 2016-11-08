@@ -15,7 +15,7 @@ class PrintInConsole extends Print {
 
     @Override
     String printHeader(LocalDate today) {
-        return String.format(" Present day : %10s\n",today);
+        return String.format(" Present day : %10s\n", today);
     }
 
     @Override
