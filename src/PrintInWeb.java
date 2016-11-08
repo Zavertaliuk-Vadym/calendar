@@ -1,4 +1,5 @@
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 
 class PrintInWeb extends Print {
@@ -10,7 +11,7 @@ class PrintInWeb extends Print {
     private static final String CLOSE_TAG_TABLE_ROW = "</tr>";
 
     @Override
-    String printHeader() {
+    String printHeader(LocalDate today) {
         return "<Html>\n" +
                 "<head>\n" +
                 "<style>\n" +
@@ -26,6 +27,7 @@ class PrintInWeb extends Print {
                 "   </style>\n" +
                 "</head>\n" +
                 "<body>\n" +
+                String.format("  Present day : %10s\n",today)+
                 "<table>";
     }
 

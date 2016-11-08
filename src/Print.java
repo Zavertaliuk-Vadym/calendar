@@ -16,7 +16,7 @@ abstract class Print {
     private DayOfWeek dayOfWeek;
     private List<DayOfWeek> weekends;
     private Locale locale;
-    private int[][] massiveOfCalendar = new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
+    private int[][] massiveOfCalendar;
 
     Print() {
         this(LocalDate.now());
@@ -29,17 +29,17 @@ abstract class Print {
     private Print(YearMonth month, LocalDate today) {
         this.month = month;
         this.today = today;
-        dayOfWeek = DayOfWeek.FRIDAY;
+        dayOfWeek = DayOfWeek.MONDAY;
         weekends = new ArrayList<>();
         weekends.add(DayOfWeek.SATURDAY);
         weekends.add(DayOfWeek.SUNDAY);
         locale = Locale.getDefault();
-        massiveOfCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveOfCalendar, today, dayOfWeek);
+        massiveOfCalendar=new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
     }
 
     abstract String printFooter();
 
-    abstract String printHeader();
+    abstract String printHeader(LocalDate today);
 
     abstract String endOfStringHeader();
 
@@ -68,10 +68,10 @@ abstract class Print {
 
     void print(boolean bool) {
         if (bool) {
-            System.out.println(printCalendarHeader() + printCalendarArray());
+            System.out.println(printHeader(today)+printCalendarHeader() + printCalendarArray()+printFooter());
         } else {
             try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
-                printWriter.println(printHeader() + printCalendarHeader() + printCalendarArray() + printFooter());
+                printWriter.println(printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter());
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
@@ -80,6 +80,7 @@ abstract class Print {
     }
 
     private String printCalendarArray() {
+         massiveOfCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveOfCalendar, today, dayOfWeek);
         StringBuilder printerCalendarArray = new StringBuilder();
         DayOfWeek thisDay = DayOfWeek.of(dayOfWeek.getValue());
         int nowDay = today.getDayOfMonth();

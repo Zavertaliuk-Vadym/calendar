@@ -1,4 +1,5 @@
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.List;
 
 class PrintInConsole extends Print {
@@ -9,12 +10,12 @@ class PrintInConsole extends Print {
 
     @Override
     String printFooter() {
-        return null;
+        return "";
     }
 
     @Override
-    String printHeader() {
-        return null;
+    String printHeader(LocalDate today) {
+        return String.format(" Present day : %10s\n",today);
     }
 
     @Override
