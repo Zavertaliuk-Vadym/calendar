@@ -75,10 +75,10 @@ class PrintInConsole {
     }
 
     private static String getTypeOfInputCalendarHeader(int i) {
-        return WeekFields.of(Locale.UK)
+        return WeekFields.of(Locale.ENGLISH)
                 .getFirstDayOfWeek()
                 .plus(i)
-                .getDisplayName(TextStyle.SHORT, Locale.UK)
+                .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
                 .toUpperCase();
     }
 }

@@ -1,8 +1,8 @@
-import java.io.IOException;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.Month;
 import java.time.YearMonth;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -15,30 +15,45 @@ public class Calendar {
     private DayOfWeek dayOfWeek;
     private List<DayOfWeek> weekends;
     private Locale locale;
-
-    public Calendar() {
+    private int[][] massiveWithCalendar = new int[6][7];
+    Calendar() {
         this(LocalDate.now());
     }
 
-    public Calendar(LocalDate today) {
+    Calendar(LocalDate today) {
         this(YearMonth.now(), today);
     }
 
-    public Calendar(YearMonth month, LocalDate today) {
+    Calendar(YearMonth month, LocalDate today) {
         this.month = month;
         this.today = today;
         dayOfWeek=DayOfWeek.MONDAY;
-        weekends.add(DayOfWeek.SATURDAY.minus(1));
-        weekends.add(DayOfWeek.SUNDAY.minus(1));
+        weekends= new ArrayList<>();
+        weekends.add(DayOfWeek.SATURDAY);
+        weekends.add(DayOfWeek.SUNDAY);
         locale=Locale.getDefault();
+    }
+    String print(){
+        PrintInConsole printInConsole =  new PrintInConsole();
+        int monthLength = today.lengthOfMonth();
+        int firstDayOfYourCalendar = dayOfWeek.getValue();
+        int firstDayInMonth = today.with(TemporalAdjusters.firstDayOfMonth()).getDayOfWeek().getValue();
+        int counter;
+        if (firstDayOfYourCalendar == 0) {
+            counter = 0;
+        } else counter = 7 - firstDayOfYourCalendar;
+        fillInCalendarArray(massiveWithCalendar, firstDayInMonth-1, monthLength);
+        System.out.println(printInConsole.printCalendarInConsole(weekends, firstDayOfYourCalendar, massiveWithCalendar, today.getDayOfMonth()));
+        return "";
     }
 
 
-    public static void main(String[] args) throws IOException {
-        int[][] massiveWithCalendar = new int[6][7];
-        int counter;
-        Calendar calendar = new Calendar();
-        calendar.print();
+//    public static void main(String[] args) throws IOException {
+//        int[][] massiveWithCalendar = new int[6][7];
+//        int counter;
+//        Calendar calendar = new Calendar();
+//        calendar.print();
+//        System.out.println(calendar);
 //        LocalDate specificDate = getDate(args);
 //
 //        PrintInConsole printInConsole = new PrintInConsole();
@@ -52,7 +67,7 @@ public class Calendar {
 //
 //        int monthLength = specificDate.lengthOfMonth();
 //
-//        if (firstDayOfYourCalendar == 0) {
+//        if (firstDayOfYourCalendar == 0) {!!!!!!!!!!
 //            counter = 0;
 //        } else counter = 7 - firstDayOfYourCalendar;
 //
@@ -69,10 +84,8 @@ public class Calendar {
 ////            }
 //            System.out.println(printInConsole.printCalendarInConsole(weekends, firstDayOfYourCalendar, massiveWithCalendar, specificDate.getDayOfMonth()));
 //        }
-    }
-    public String print(){
-        return "";
-    }
+//    }
+
 
     private static DayOfWeek getFirstDayOfYourWeek() {
         return DayOfWeek.THURSDAY.minus(1);
