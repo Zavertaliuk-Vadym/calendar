@@ -22,7 +22,7 @@ abstract class Print {
     private DayOfWeek dayOfWeek;
     private List<DayOfWeek> weekends;
     private Locale locale;
-    private int[][] massiveWithCalendar = new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
+    private int[][] massiveOfCalendar = new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
 
     Print() {
         this(LocalDate.now());
@@ -40,54 +40,59 @@ abstract class Print {
         weekends.add(DayOfWeek.SATURDAY);
         weekends.add(DayOfWeek.SUNDAY);
         locale = Locale.getDefault();
-        massiveWithCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveWithCalendar, today, dayOfWeek);
+        massiveOfCalendar = FillMassiveOfCalendar.fillInCalendarArray(massiveOfCalendar, today, dayOfWeek);
     }
 
-    void print() {
-        System.out.println(print(weekends, dayOfWeek, massiveWithCalendar, today));
-    }
-
-    void printInWeb() {
-        PrintInWeb printInWeb = new PrintInWeb();
-        try (PrintWriter printWriter = new PrintWriter("text3.html")) {
-            printWriter.println(printInWeb.print(weekends, dayOfWeek, massiveWithCalendar, today));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+    void print(boolean bool) {
+        if (bool) {
+            System.out.println(printCalendarHeader() + printCalendarArray());
+        } else {
+            try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
+                printWriter.println(printHeaderHTML() + printCalendarHeader() + printCalendarArray() + printDownHTML());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    private String print(List<DayOfWeek> weekends, DayOfWeek monthStartWithThisDate, int[][] massiveWithCalendar, LocalDate nowDay) {
-        return printCalendarHeader(weekends, monthStartWithThisDate) +
-                printCalendarArray(weekends, massiveWithCalendar, nowDay, monthStartWithThisDate);
 
     }
 
-    private String printCalendarHeader(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
+    private String printCalendarHeader() {
         StringBuilder days = new StringBuilder();
-        int firstDay = firstDaySelectedMonth.getValue();
+        int firstDay = dayOfWeek.getValue();
         DayOfWeek thisDay = DayOfWeek.of(firstDay);
+        days.append(startOfStringHeader());                                                ///!!!!!
         for (int i = 1; i <= DAYS_IN_WEEK; i++) {
             days.append(getWeekend(weekends, thisDay));
             thisDay = thisDay.plus(1);
         }
-        days.append("\n");
+        days.append(endOfStringHeader());
         return days.toString();
     }
 
+    abstract String endOfStringHeader();
+
+    abstract String startOfStringHeader();
+
+    abstract String endOfStringBody();
+
+    abstract String startOfStringBody();
+
     abstract String getWeekend(List<DayOfWeek> weekends, DayOfWeek dayOfWeek);
 
-    private String printCalendarArray(List<DayOfWeek> weekends, int[][] massiveOfCalendar,
-                                      LocalDate currentDay, DayOfWeek firstDaySelectedMonth) {
+    abstract String selectionOfDay(int currentPosition, boolean currentDay, boolean weekends);
+
+    private String printCalendarArray() {
         StringBuilder printerCalendarArray = new StringBuilder();
-        DayOfWeek thisDay = DayOfWeek.of(firstDaySelectedMonth.getValue());
-        int nowDay = currentDay.getDayOfMonth();
+        DayOfWeek thisDay = DayOfWeek.of(dayOfWeek.getValue());
+        int nowDay = today.getDayOfMonth();
         for (int i = 0; i < MAX_WEEKS_IN_MONTH; i++) {
+            printerCalendarArray.append(startOfStringBody());
             for (int j = 0; j < DAYS_IN_WEEK; j++) {
-                selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j], nowDay),
-                        weekends.contains(thisDay), printerCalendarArray);
+                printerCalendarArray.append(selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j], nowDay),
+                        weekends.contains(thisDay)));
                 thisDay = thisDay.plus(1);
             }
-            printerCalendarArray.append("\n");
+            printerCalendarArray.append(endOfStringBody());
         }
         return printerCalendarArray.toString();
     }
@@ -95,8 +100,6 @@ abstract class Print {
     static boolean isCurrentDay(int day, int currentDay) {
         return day == currentDay;
     }
-
-    abstract void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray);
 
     static String getFormat(int i, String format) {
         return String.format(format, i);
@@ -110,5 +113,33 @@ abstract class Print {
         return dayOfWeek
                 .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
                 .toUpperCase();
+    }
+
+
+    private static String printHeaderHTML() {
+
+        return "<Html>\n" +
+                "<head>\n" +
+                "<style>\n" +
+                "       td.weekend{\n" +
+                "           color: red;\n" +
+                "       }\n" +
+                "       td.currentDay{\n" +
+                "           color: green;\n" +
+                "       }\n" +
+                "       td{\n" +
+                "           padding:5px;\n" +
+                "       }\n" +
+                "   </style>\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<table>";
+    }
+
+    private static String printDownHTML() {
+
+        return "</table>\n" +
+                "</body>\n" +
+                "</Html>";
     }
 }
