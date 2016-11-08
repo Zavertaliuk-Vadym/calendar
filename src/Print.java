@@ -1,5 +1,3 @@
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -66,15 +64,13 @@ abstract class Print {
         return days.toString();
     }
 
-    void print(boolean bool) {
-        if (bool) {
-            System.out.println(printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter());
+
+    String print(boolean check) {
+        if (check) {
+            return printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter();
         } else {
-            try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
-                printWriter.println(printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter());
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
+
+                return printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter();
         }
 
     }
