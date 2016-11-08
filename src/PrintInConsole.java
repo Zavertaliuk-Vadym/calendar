@@ -1,6 +1,6 @@
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.format.TextStyle;
-import java.time.temporal.WeekFields;
 import java.util.List;
 import java.util.Locale;
 
@@ -12,38 +12,52 @@ class PrintInConsole {
     private static final String EXT_END_TOKEN = (char) 27 + "[0m";
     private static final String RED_TEXT_START_TOKEN = (char) 27 + "[31m";
 
-    String printCalendarInConsole(List<DayOfWeek> weekends, DayOfWeek monthStartWithThisDate, int[][] massiveWithCalendar, int nowDay) {
+    String printCalendarInConsole(List<DayOfWeek> weekends, DayOfWeek monthStartWithThisDate, int[][] massiveWithCalendar, LocalDate nowDay) {
         return printCalendarHeader(weekends, monthStartWithThisDate) +
-                printCalendarArray(weekends, massiveWithCalendar, nowDay);
+                printCalendarArray(weekends, massiveWithCalendar, nowDay,monthStartWithThisDate);
     }
 
-    public static String printCalendarHeader(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
-        StringBuilder printerCalendarHeader = new StringBuilder();
-        for (int i = firstDaySelectedMonth.getValue(); i < DAYS_IN_WEEK+firstDaySelectedMonth.getValue(); i++) {
-            selectionWeekends(weekends, printerCalendarHeader, i);
+    private String printCalendarHeader(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
+        StringBuilder days = new StringBuilder();
+        int firstDay=firstDaySelectedMonth.getValue();
+        DayOfWeek thisDay = DayOfWeek.of(firstDay);
+        for (int i = 1; i <= DAYS_IN_WEEK; i++) {
+            days.append(selectionWeekends(weekends, thisDay));
+            thisDay = thisDay.plus(1);
         }
-        printerCalendarHeader.append("\n");
-        return printerCalendarHeader.toString();
+        days.append("\n");
+        return days.toString();
     }
 
-    public static String printCalendarArray(List<DayOfWeek> weekends,
-                                            int[][] massiveOfCalendar, int currentDay) {
+    private String selectionWeekends(List<DayOfWeek> weekends, DayOfWeek dayOfWeek) {
+        if (weekends.contains(dayOfWeek)) {
+            return getFormat(RED_TEXT_START_TOKEN + "%4s" + EXT_END_TOKEN, getTypeOfInputCalendarHeader(dayOfWeek));
+        } else {
+            return getFormat("%4s", getTypeOfInputCalendarHeader(dayOfWeek));
+
+        }
+    }
+
+    private String printCalendarArray(List<DayOfWeek> weekends, int[][] massiveOfCalendar,
+                                      LocalDate currentDay,DayOfWeek firstDaySelectedMonth) {
         StringBuilder printerCalendarArray = new StringBuilder();
+        int thisDay = firstDaySelectedMonth.getValue();
+        int nowDay = currentDay.getDayOfMonth();
         for (int i = 0; i < MAX_WEEKS_IN_MONTH; i++) {
             for (int j = 0; j < DAYS_IN_WEEK; j++) {
-                selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j],currentDay ),
-                        weekends.contains(DayOfWeek.of(j+1)), printerCalendarArray);
+                selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j],nowDay),
+                        weekends.contains(DayOfWeek.of(j+1).minus(thisDay)), printerCalendarArray);
             }
             printerCalendarArray.append("\n");
         }
         return printerCalendarArray.toString();
     }
 
-    private static boolean isCurrentDay(int day, int currentDay) {
+    private boolean isCurrentDay(int day, int currentDay) {
         return day == currentDay;
     }
 
-    private static void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray) {
+    private void selectionOfDay(int currentPosition, boolean currentDay, boolean weekends, StringBuilder printerCalendarArray) {
         if (currentPosition == 0) {
             printerCalendarArray.append(getFormat("%4s", ""));
             return;
@@ -57,27 +71,16 @@ class PrintInConsole {
         }
     }
 
-    private static String getFormat(int i, String format) {
+    private String getFormat(int i, String format) {
         return String.format(format, i);
     }
 
-    private static void selectionWeekends(List<DayOfWeek> weekends, StringBuilder printerCalendarHeader, int currentPosition) {
-        if (weekends.contains(DayOfWeek.of(currentPosition))) {
-            printerCalendarHeader.append(getFormat(RED_TEXT_START_TOKEN + "%4s" + EXT_END_TOKEN, getTypeOfInputCalendarHeader(currentPosition)));
-        } else {
-            printerCalendarHeader.append(getFormat("%4s", getTypeOfInputCalendarHeader(currentPosition)));
-
-        }
-    }
-
-    private static String getFormat(String format, String typeOfInputCalendarHeader) {
+    private String getFormat(String format, String typeOfInputCalendarHeader) {
         return String.format(format, typeOfInputCalendarHeader);
     }
 
-    static String getTypeOfInputCalendarHeader(int i) {
-        return WeekFields.of(Locale.ENGLISH)
-                .getFirstDayOfWeek()
-                .plus(i)
+    private String getTypeOfInputCalendarHeader(DayOfWeek dayOfWeek) {
+        return dayOfWeek
                 .getDisplayName(TextStyle.SHORT, Locale.ENGLISH)
                 .toUpperCase();
     }

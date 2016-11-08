@@ -18,6 +18,7 @@ public class Calendar {
     private List<DayOfWeek> weekends;
     private Locale locale;
     private int[][] massiveWithCalendar = new int[MAX_WEEKS_IN_MONTH][DAYS_IN_WEEK];
+
     Calendar() {
         this(LocalDate.now());
     }
@@ -26,29 +27,28 @@ public class Calendar {
         this(YearMonth.now(), today);
     }
 
-    Calendar(YearMonth month, LocalDate today) {
+   Calendar(YearMonth month, LocalDate today) {
         this.month = month;
         this.today = today;
-        dayOfWeek=DayOfWeek.MONDAY;
+        dayOfWeek=DayOfWeek.THURSDAY;
         weekends= new ArrayList<>();
-        weekends.add(DayOfWeek.SATURDAY);
+        weekends.add(DayOfWeek.THURSDAY);
         weekends.add(DayOfWeek.SUNDAY);
         locale=Locale.getDefault();
     }
     void print(){
         PrintInConsole printInConsole =  new PrintInConsole();
-        int monthLength = today.lengthOfMonth();
-        int firstDayInMonth = today.with(TemporalAdjusters.firstDayOfMonth()).getDayOfWeek().getValue();
-        FillMassiveOfCalendar.fillInCalendarArray(massiveWithCalendar, firstDayInMonth, monthLength);
-        System.out.println(printInConsole.printCalendarInConsole(weekends, dayOfWeek, massiveWithCalendar, today.getDayOfMonth()));
+        FillMassiveOfCalendar.fillInCalendarArray(massiveWithCalendar, today,dayOfWeek);
+        System.out.println(printInConsole.printCalendarInConsole(weekends, dayOfWeek, massiveWithCalendar, today));
     }
+
     void printInWeb(){
         PrintInWeb printInWeb = new PrintInWeb();
         int monthLength = today.lengthOfMonth();
         int firstDayInMonth = today.with(TemporalAdjusters.firstDayOfMonth()).getDayOfWeek().getValue();
-        FillMassiveOfCalendar.fillInCalendarArray(massiveWithCalendar, firstDayInMonth, monthLength);
+        FillMassiveOfCalendar.fillInCalendarArray(massiveWithCalendar, today,dayOfWeek);
         try (PrintWriter printWriter = new PrintWriter("text3.html")) {
-            printWriter.println(printInWeb.printCalendarInWeb(weekends, dayOfWeek, massiveWithCalendar, today.getDayOfMonth()));
+            printWriter.println(printInWeb.printCalendarInWeb(weekends, dayOfWeek, massiveWithCalendar, today));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
