@@ -12,18 +12,18 @@ class PrintInConsole {
     private static final String EXT_END_TOKEN = (char) 27 + "[0m";
     private static final String RED_TEXT_START_TOKEN = (char) 27 + "[31m";
 
-    String printCalendarInConsole(List<DayOfWeek> weekends, int monthStartWithThisDate, int[][] massiveWithCalendar, int nowDay) {
+    String printCalendarInConsole(List<DayOfWeek> weekends, DayOfWeek monthStartWithThisDate, int[][] massiveWithCalendar, int nowDay) {
         return printCalendarHeader(weekends, monthStartWithThisDate) +
-                printCalendarArray(weekends, monthStartWithThisDate, massiveWithCalendar, nowDay);
+                printCalendarArray(weekends, massiveWithCalendar, nowDay);
     }
 
-    public static String printCalendarArray(List<DayOfWeek> weekends , int monthStartWithThisDate,
+    public static String printCalendarArray(List<DayOfWeek> weekends,
                                             int[][] massiveOfCalendar, int currentDay) {
         StringBuilder printerCalendarArray = new StringBuilder();
         for (int i = 0; i < MAX_WEEKS_IN_MONTH; i++) {
             for (int j = 0; j < DAYS_IN_WEEK; j++) {
-                selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j], currentDay),
-                        weekends.contains(j + monthStartWithThisDate), printerCalendarArray);
+                selectionOfDay(massiveOfCalendar[i][j], isCurrentDay(massiveOfCalendar[i][j],currentDay ),
+                        weekends.contains(DayOfWeek.of(j+1)), printerCalendarArray);
             }
             printerCalendarArray.append("\n");
         }
@@ -52,9 +52,9 @@ class PrintInConsole {
         return String.format(format, i);
     }
 
-    public static String printCalendarHeader(List<DayOfWeek> weekends, int firstDaySelectedMonth) {
+    public static String printCalendarHeader(List<DayOfWeek> weekends, DayOfWeek firstDaySelectedMonth) {
         StringBuilder printerCalendarHeader = new StringBuilder();
-        for (int i = firstDaySelectedMonth; i < DAYS_IN_WEEK + firstDaySelectedMonth; i++) {
+        for (int i = firstDaySelectedMonth.getValue(); i < DAYS_IN_WEEK+firstDaySelectedMonth.getValue(); i++) {
             selectionWeekends(weekends, printerCalendarHeader, i);
         }
         printerCalendarHeader.append("\n");
@@ -74,7 +74,7 @@ class PrintInConsole {
         return String.format(format, typeOfInputCalendarHeader);
     }
 
-    private static String getTypeOfInputCalendarHeader(int i) {
+    static String getTypeOfInputCalendarHeader(int i) {
         return WeekFields.of(Locale.ENGLISH)
                 .getFirstDayOfWeek()
                 .plus(i)
