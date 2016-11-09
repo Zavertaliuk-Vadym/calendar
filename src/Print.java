@@ -65,14 +65,8 @@ abstract class Print {
     }
 
 
-    String print(boolean check) {
-        if (check) {
-            return printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter();
-        } else {
-
-                return printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter();
-        }
-
+    String print() {
+        return printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter();
     }
 
     private String printCalendarArray() {
