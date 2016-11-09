@@ -1,8 +1,10 @@
+package Print;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-class PrintInWeb extends Print {
+public class PrintInWeb extends Print {
     private static final String WEEKEND_TEXT_START_TOKEN_IN_WEB = "<td class=\"weekend\">";
     private static final String OPEN_TAG_TABLE_COLUMN = "<td>";
     private static final String TEXT_END_TOKEN_IN_WEB = "</td>";

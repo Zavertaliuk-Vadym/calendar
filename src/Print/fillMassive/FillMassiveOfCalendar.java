@@ -1,12 +1,14 @@
+package Print.fillMassive;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 
-class FillMassiveOfCalendar {
+public class FillMassiveOfCalendar {
     private static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
 
-    static int[][] fillInCalendarArray(int[][] a, LocalDate localDate, DayOfWeek dayOfWeek) {
+    public static int[][] fillInCalendarArray(int[][] a, LocalDate localDate, DayOfWeek dayOfWeek) {
 
         int firstDayOfFirstWeekCurrentMonth = localDate.with(TemporalAdjusters.firstDayOfMonth()).getDayOfWeek().getValue();
         int firstDay = DayOfWeek.of(firstDayOfFirstWeekCurrentMonth).minus(dayOfWeek.getValue()).plus(1).getValue();
@@ -26,4 +28,6 @@ class FillMassiveOfCalendar {
         }
         return a;
     }
+
+
 }

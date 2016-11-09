@@ -1,3 +1,9 @@
+package calendars;
+
+import Print.Print;
+import Print.PrintInConsole;
+import Print.PrintInWeb;
+
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.time.DayOfWeek;
@@ -6,11 +12,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Created by employee on 11/9/16.
- */
 public class CustomCalendar {
-    void checkYourChange(){
+    public void checkYourChange() {
         Print calendar;
         Scanner scanner = new Scanner(System.in);
         Scanner scanner1 = new Scanner(System.in);
@@ -24,25 +27,30 @@ public class CustomCalendar {
         int day = scanner.nextInt();
         System.out.println("Select your first day in week of calendar:");
         int firstDay = scanner.nextInt();
-        DayOfWeek firstDayOfWeek =DayOfWeek.of(firstDay);
+        DayOfWeek firstDayOfWeek = DayOfWeek.of(firstDay);
         System.out.println("Select your weekend in week of calendar:");
         String weekend = scanner1.nextLine();
-        List<DayOfWeek> weekList = add(weekend,dayOfWeeks);
+        List<DayOfWeek> weekList = add(weekend, dayOfWeeks);
         System.out.println("Where you wont to print custom calendar?\n 1 - Console. 2 - Web.");
         int i = scanner.nextInt();
-        switch (i){
-            case 1:{
+        getTypeCalendar(year, month, day, firstDayOfWeek, weekList, i);
+    }
+
+    private void getTypeCalendar(int year, int month, int day, DayOfWeek firstDayOfWeek, List<DayOfWeek> weekList, int i) {
+        Print calendar;
+        switch (i) {
+            case 1: {
                 calendar = new PrintInConsole();
-                calendar.setToday(LocalDate.of(year,month,day));
+                calendar.setToday(LocalDate.of(year, month, day));
                 calendar.setDayOfWeek(firstDayOfWeek);
                 calendar.setWeekends(weekList);
                 System.out.println(calendar.print());
                 break;
             }
-            case 2:{
+            case 2: {
                 calendar = new PrintInWeb();
                 try (PrintWriter printWriter = new PrintWriter("calendar.html")) {
-                    calendar.setToday(LocalDate.of(year,month,day));
+                    calendar.setToday(LocalDate.of(year, month, day));
                     calendar.setDayOfWeek(firstDayOfWeek);
                     calendar.setWeekends(weekList);
                     printWriter.append(calendar.print());
@@ -54,10 +62,10 @@ public class CustomCalendar {
         }
     }
 
-    static List<DayOfWeek> add(String s,List<DayOfWeek> dayOfWeeks) {
+    private static List<DayOfWeek> add(String s, List<DayOfWeek> dayOfWeeks) {
         String[] numbersArray = s.split("[, ]");
         for (String number : numbersArray) {
-            if(!number.trim().isEmpty()) {
+            if (!number.trim().isEmpty()) {
                 DayOfWeek weekends = DayOfWeek.of(Integer.parseInt(number.trim()));
                 dayOfWeeks.add(weekends);
             }

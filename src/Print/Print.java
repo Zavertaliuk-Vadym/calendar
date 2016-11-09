@@ -1,3 +1,7 @@
+package Print;
+
+import Print.fillMassive.FillMassiveOfCalendar;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
@@ -6,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-abstract class Print {
+public abstract class Print {
     private static final int DAYS_IN_WEEK = 7;
     private static final int MAX_WEEKS_IN_MONTH = 6;
     private YearMonth month;
@@ -65,7 +69,7 @@ abstract class Print {
     }
 
 
-    String print() {
+    public String print() {
         return printHeader(today) + printCalendarHeader() + printCalendarArray() + printFooter();
     }
 

@@ -1,8 +1,10 @@
+package Print;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.List;
 
-class PrintInConsole extends Print {
+public class PrintInConsole extends Print {
 
     private static final String GREEN_TEXT_START_TOKEN = (char) 27 + "[36m";
     private static final String EXT_END_TOKEN = (char) 27 + "[0m";

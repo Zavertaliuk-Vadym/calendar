@@ -75,7 +75,7 @@
 //        }
 //        expected.append("\n");
 //
-//        System.out.println(PrintInConsole.printCalendarArray(a, dayNow, weekends, weekStartWithThisDayInt));
+//        System.out.println(Print.PrintInConsole.printCalendarArray(a, dayNow, weekends, weekStartWithThisDayInt));
 //
 //        assertThat(expected.toString(), equalTo(outContent.toString()));
 //    }
@@ -107,7 +107,7 @@
 //        expected.append("\n\n");
 //
 //
-//        System.out.println(PrintInConsole.printCalendarHeader(weekends, firstDaySelectedMonth));
+//        System.out.println(Print.PrintInConsole.printCalendarHeader(weekends, firstDaySelectedMonth));
 //
 //
 //        assertThat(expected.toString(), equalTo(outContent.toString()));
