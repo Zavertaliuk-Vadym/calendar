@@ -1,6 +1,6 @@
-package Print;
+package print;
 
-import Print.fillMassive.FillMassiveOfCalendar;
+import print.fillMassive.FillMassiveOfCalendar;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -55,7 +55,7 @@ public abstract class Print {
 
     abstract String selectionOfDay(int currentPosition, boolean currentDay, boolean weekends);
 
-    private String printCalendarHeader() {
+    public String printCalendarHeader() {
         StringBuilder days = new StringBuilder();
         int firstDay = dayOfWeek.getValue();
         DayOfWeek thisDay = DayOfWeek.of(firstDay);

@@ -1,4 +1,4 @@
-package Print.fillMassive;
+package print.fillMassive;
 
 import java.time.DayOfWeek;
 import java.time.LocalDate;

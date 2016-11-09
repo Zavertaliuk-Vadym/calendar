@@ -1,8 +1,8 @@
 package calendars;
 
-import Print.Print;
-import Print.PrintInConsole;
-import Print.PrintInWeb;
+import print.Print;
+import print.PrintInConsole;
+import print.PrintInWeb;
 
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
